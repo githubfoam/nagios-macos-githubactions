@@ -1,0 +1,58 @@
+
+
+name: "macOS latest CI workflow"
+
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+      # https://crontab.guru/
+      # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+      - cron:  '0 0 * * FRI' ##execution of a task in the first minute of the month  
+
+
+jobs:
+
+
+
+  macos-latest:
+      name: "MacPorts macos-latest 10.15.7"
+      runs-on: macos-latest
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: "brew update"
+        run: brew update      
+      - name: "check on brew version"
+        run: brew --version   
+      - name: "check on xcode version"
+        run: |
+          /usr/bin/xcodebuild -version
+          which xcodebuild
+          xcodebuild -version
+        # https://guide.macports.org/#installing.xcode  
+      - name: "MacPorts Source Install"
+        run: |
+          export MACPORTS_VERSION="2.7.1"
+          echo $MACPORTS_VERSION 
+          curl -O https://distfiles.macports.org/MacPorts/MacPorts-$MACPORTS_VERSION.tar.bz2          
+          tar xf MacPorts-$MACPORTS_VERSION.tar.bz2
+          cd MacPorts-$MACPORTS_VERSION/
+          ./configure
+          make
+          sudo make install
+      - name: "Install Nagios with MacPorts"
+        run: |
+          echo $PATH          
+          export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+          port version
+          sudo port -v selfupdate
+          port version
+          sudo port install nagios  
+          port contents nagios #see what files were installed by nagios
+          sudo port selfupdate && sudo port upgrade nagios
+          sudo port install nagios-plugins
+          port contents nagios-plugins #see what files were installed by nagios-plugins
+          sudo port selfupdate && sudo port upgrade nagios-plugins #upgrade nagios-plugins
+
