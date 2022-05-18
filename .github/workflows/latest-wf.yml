@@ -5,7 +5,7 @@ name: "macOS latest CI workflow"
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ test ]
 
 
 
@@ -58,12 +58,7 @@ jobs:
       #   run: |
       #     sudo port -v selfupdate
       #     sudo port install nagios 
-      #     port contents nagios #see what files were installed by nagios  
-      # - name: "Install Nagios  with MacPorts"
-      #   run: |
-      #     sudo port -v selfupdate
-      #     sudo port install nagios 
-      #     port contents nagios #see what files were installed by nagios            
+      #     port contents nagios #see what files were installed by nagios             
       # - name: "Upgrade Nagios Plugins with MacPorts"
       #   run: |
       #     sudo port -v selfupdate
